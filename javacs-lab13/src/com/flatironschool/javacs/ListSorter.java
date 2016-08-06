@@ -63,8 +63,33 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		if(list.size() <= 1){
+			return list;
+		}
+		List<T> left = mergeSort(new LinkedList<T>(list.subList(0, list.size()/2)), comparator);
+		List<T> right = mergeSort(new LinkedList<T>(list.subList(list.size()/2, list.size())), comparator);
+		return mergeSortHelper(left, right, comparator);
+	}
+	
+	private List<T> mergeSortHelper(List<T> left, List<T> right, Comparator<T> comparator){
+		List<T> retList = new LinkedList<T>();
+		int compare = 0;
+		while(!left.isEmpty() && !right.isEmpty()){
+			compare = comparator.compare(left.get(0), right.get(0));
+			if(compare < 0){
+				retList.add(left.remove(0));
+			}
+			else{
+				retList.add(right.remove(0));
+			}
+		}
+		while(!left.isEmpty()){
+			retList.add(left.remove(0));
+		}
+		while(!right.isEmpty()){
+			retList.add(right.remove(0));
+		}
+		return retList;
 	}
 
 	/**
@@ -75,7 +100,14 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+		PriorityQueue<T> tempList = new PriorityQueue<T>();
+		for(int i = 0; i < list.size(); i++){
+			tempList.offer(list.get(i));
+		}
+		list.clear();
+		while(!tempList.isEmpty()){
+			list.add(tempList.poll());
+		}
 	}
 
 	
@@ -89,8 +121,24 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		PriorityQueue<T> pqList = new PriorityQueue<T>(list.size(), comparator);
+		for(T item: list){
+			if(pqList.size() < k){
+				pqList.offer(item);
+			}
+			else{
+				int comp = comparator.compare(item, pqList.peek());
+				if(comp > 0){
+					pqList.poll();
+					pqList.offer(item);
+				}
+			}
+		}
+		List<T> retList = new ArrayList<T>();
+		while(!pqList.isEmpty()){
+			retList.add(pqList.poll());
+		}
+        return retList;
 	}
 
 	
